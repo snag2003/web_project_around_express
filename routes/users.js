@@ -1,40 +1,32 @@
 const userRouter = require("express").Router();
-const fs = require("fs");
+const fs = require("fs").promises;
 const path = require("path");
 
-userRouter.get("/users", (req, res) => {
-  const usersFilePath = path.join(__dirname, "../data/users.json");
-  fs.readFile(usersFilePath, "utf8", (err, data) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ message: "An error occurred while reading data" });
-      return;
-    }
-    const users = JSON.parse(data);
-    res.send(users);
-  });
-});
+const usersFilePath = path.join(__dirname, "../data/users.json");
 
-userRouter.get("/:id", (req, res) => {
-  const userId = req.params.id;
-  const usersFilePath = path.join(__dirname, "../data/users.json");
-  fs.readFile(usersFilePath, "utf8", (err, data) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ message: "An error occurred while reading data" });
-      return;
-    }
-    const users = JSON.parse(data);
+const getData = (usersFilePath) =>
+  fs
+    .readFile(usersFilePath, { encoding: "utf-8" })
+    .then((data) => JSON.parse(data));
 
-    const user = users.find((u) => u.id === userId);
+userRouter.get("/users", (req, res) =>
+  getData(usersFilePath)
+    .then((users) => res.send(users))
+    .catch(() =>
+      res.status(404).json({ message: "Requested resource not found" })
+    )
+);
 
-    if (!user) {
-      res.status(404).json({ message: "User ID not found" });
-      return;
-    }
-
-    res.send(user);
-  });
+userRouter.get("/users/:id", (req, res) => {
+  getData(usersFilePath)
+    .then((users) => users.find((user) => user._id === req.params.id))
+    .then((user) => {
+      if (user) {
+        res.send(user);
+      } else {
+        res.status(404).json({ message: "User ID not found" });
+      }
+    });
 });
 
 module.exports = userRouter;
