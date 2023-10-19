@@ -1,5 +1,5 @@
 const Card = require("../models/card");
-const handleError = require("../helpers/handleError");
+const { handleError } = require("../helpers/handleError");
 
 module.exports.getCards = (req, res) => {
   Card.find({})
@@ -19,6 +19,26 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndDelete(req.params._id)
     .orFail()
+    .then((card) => res.status(200).send({ data: card }))
+    .catch((err) => handleError(err, res, "tarjeta"));
+};
+
+module.exports.likeCard = (req, res) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true }
+  )
+    .then((card) => res.status(200).send({ data: card }))
+    .catch((err) => handleError(err, res, "tarjeta"));
+};
+
+module.exports.dislikeCard = (req, res) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true }
+  )
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => handleError(err, res, "tarjeta"));
 };
