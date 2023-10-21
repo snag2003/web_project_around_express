@@ -9,7 +9,7 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUser = (req, res) => {
-  User.findById(req.params._id)
+  User.findById(req.params.id)
     .orFail()
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => handleError(err, res, "usuario"));
@@ -25,7 +25,7 @@ module.exports.createUser = (req, res) => {
 
 module.exports.updateProfile = (req, res) => {
   User.findByIdAndUpdate(
-    req.params._id,
+    req.user._id,
     { $set: { name: req.body.name, about: req.body.about } },
     { new: true }
   )
@@ -35,7 +35,7 @@ module.exports.updateProfile = (req, res) => {
 
 module.exports.updateAvatar = (req, res) => {
   User.findByIdAndUpdate(
-    req.params._id,
+    req.user._id,
     { $set: { avatar: req.body.avatar } },
     { new: true }
   )
