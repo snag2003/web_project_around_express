@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -18,13 +18,13 @@ const userSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator(v) {
-        return /^(https?:)(www\.)?[A-Za-z0-9._~:\/?%#[\]@!$&'()*+,;=-]+#?/.test(
-          v
+        return /^(https?:)(www\.)?[A-Za-z0-9._~:/?%#[\]@!$&'()*+,;=-]+#?/.test(
+          v,
         );
       },
-      message: "Lo sentimos. Tienes que poner una direccíon valida",
+      message: 'Lo sentimos. Tienes que poner una direccíon valida',
     },
   },
 });
 
-module.exports = mongoose.model("user", userSchema);
+module.exports = mongoose.model('user', userSchema);

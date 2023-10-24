@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -12,16 +12,16 @@ const cardSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator(v) {
-        return /^(https?:)(www\.)?[A-Za-z0-9._~:\/?%#[\]@!$&'()*+,;=-]+#?/.test(
-          v
+        return /^(https?:)(www\.)?[A-Za-z0-9._~:/?%#[\]@!$&'()*+,;=-]+#?/.test(
+          v,
         );
       },
-      message: "Lo sentimos. Tienes que poner un link valido",
+      message: 'Lo sentimos. Tienes que poner un link valido',
     },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: 'user',
     required: true,
   },
   likes: {
@@ -34,4 +34,4 @@ const cardSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("card", cardSchema);
+module.exports = mongoose.model('card', cardSchema);
